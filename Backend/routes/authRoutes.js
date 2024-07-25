@@ -14,16 +14,21 @@ router.get('/login', authController.loginPage);
 // Logout route
 router.get('/logout', authController.logout);
 
+// Redirect from Google route
+router.get('/google/redirect',
+    passport.authenticate('google', {
+        successRedirect : '/blogs/',
+        failureRedirect : '/login',
+        failureFlash: 'Invalid Google credentials.'
+    }),
+    authController.googleRedirect);
+
 // Auth to Google route
 router.get('/google', 
             passport.authenticate('google', {
                 scope: ['profile']
             }), 
             authController.googleAuth);
-// Redirect from Google route
-router.get('/google/redirect',
-    passport.authenticate('google'),
-    authController.googleRedirect);
 
 // Auth to Git route
 // Auth to LinkedIn route

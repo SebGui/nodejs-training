@@ -7,6 +7,9 @@ const app = express();
 // Load Morgan (HTTP request logger)
 const morgan = require('morgan');
 
+// Import passport
+const passport = require('passport');
+
 // Setup passport for OAuth
 const passportSetup = require('./config/passport-setup');
 
@@ -17,11 +20,16 @@ const blogRoutes = require('./routes/blogRoutes');
 
 // Mongoose init
 const mongoose = require('mongoose');
-const { sortBy } = require('lodash');
+
+// App Keys
+const keys = require('./config/keys');
+
+// Cookie session
+const cookieSession = require('cookie-session');
 
 let server = null;
 // Connect to MongoDB
-const dbURI = 'mongodb+srv://fizsko:mypass321@mycluster.zyio5sg.mongodb.net/?retryWrites=true&w=majority&appName=MyCluster';
+const dbURI = keys.mongodb.connectLink;
 mongoose.connect(dbURI)
     .then((result) => {
         // Listen to requests, save reference of server to a constant for eg websockets management
@@ -34,6 +42,16 @@ mongoose.connect(dbURI)
 // Register view engine
 app.set('view engine', 'ejs');
 //app.set('views', 'folderName');//For folder name other than 'views'
+
+// Cookie Session init 
+app.use(cookieSession({
+    maxAge : 24 * 60 * 60 * 1000, // 1 day
+    keys: [keys.session.cookieKey]
+}))
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 //Middleware & Static Files (styles etc)
 app.use(express.static(__dirname + "/public"));

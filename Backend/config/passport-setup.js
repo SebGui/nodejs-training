@@ -1,8 +1,25 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const keys = require('./keys');
+const authController = require('../controllers/authController');
+const User = require('../models/user');
+
+// User serialization
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+// User deserialization
+passport.deserializeUser((id, done) => {
+    // Find user based on id
+    User.findById({id}).then((user) => {
+        // Go to next step with that user reference
+        done(null, user);
+    });
+}); 
 
 passport.use(
+    // Google Strategy :
     new GoogleStrategy({
         // Options for the strategy
         callbackURL: '/auth/google/redirect',
@@ -11,8 +28,23 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
         // Passport callback function
-        console.log('Passport callback function fired');
+        User.findOne({googleid:profile.id}).then((currentUser) => {
+            if (currentUser) {
+                // Do nothing
+                console.log('User is : ' + currentUser);
+                done(null, currentUser);
+            } else {
+                // Create user
+                new User({
+                    googleid: profile.id,
+                    username: profile.displayName
+                }).save().then((newUser) => {
+                    console.log('New user created : ' + newUser);
+                    done(null, newUser);
+                });
+            }
+        });
 
-        console.log(profile);
-    })
+        //done();
+    }) // Another Strategy....
 );

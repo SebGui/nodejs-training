@@ -1,4 +1,4 @@
-const Blog = require('../models/auth');
+const User = require('../models/user');
 const passport = require('passport');
 
 /*
@@ -21,9 +21,10 @@ const googleAuth = (req, res) => {
 const googleRedirect = (req, res) => {
     // Handle with Passport.js
     //res.send('Rection from google');
-    
+    console.log("is logged in");
+    //res.send('Logged');
 
-    res.redirect('../blogs/');
+    res.redirect('../../blogs');
 }
 
 module.exports = {

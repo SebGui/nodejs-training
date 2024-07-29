@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    _id: {
+    /*_id: {
         type: Object
-    },
+    },*/
     googleid: {
         type: String,
         required: true
@@ -13,6 +13,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    thumbnail: {
+        type: String,
+        required: false
+    }
     /*password: {
         type: String,
         required: true

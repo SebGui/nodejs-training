@@ -17,6 +17,8 @@ const passportSetup = require('./config/passport-setup');
 const authRoutes = require('./routes/authRoutes');
 // Routes for /blogs requests
 const blogRoutes = require('./routes/blogRoutes');
+// Routes for /profile requests
+const profileRoutes = require('./routes/profileRoutes');
 
 // Mongoose init
 const mongoose = require('mongoose');
@@ -25,7 +27,7 @@ const mongoose = require('mongoose');
 const keys = require('./config/keys');
 
 // Cookie session
-const cookieSession = require('cookie-session');
+var session = require('express-session')
 
 let server = null;
 // Connect to MongoDB
@@ -44,10 +46,13 @@ app.set('view engine', 'ejs');
 //app.set('views', 'folderName');//For folder name other than 'views'
 
 // Cookie Session init 
-app.use(cookieSession({
-    maxAge : 24 * 60 * 60 * 1000, // 1 day
-    keys: [keys.session.cookieKey]
-}))
+app.use(session({
+    secret: keys.session.cookieKey,
+    resave: false,
+    saveUninitialized: true,
+    maxAge: 24 * 60 * 60 * 1000
+}));
+
 
 // Initialize passport
 app.use(passport.initialize());
@@ -80,13 +85,16 @@ app.use((req, res, next) => {
 // '/auth' routes
 app.use('/auth', authRoutes);
 
+// '/profile' routes
+app.use('/profile', profileRoutes);
+
 // '/blogs' routes
 app.use('/blogs', blogRoutes);
 
 
 // @GET for '/'
 app.get('/', (req, res) => {
-    res.render('home', {title: 'Home'});
+    res.render('home', {title: 'Home', user:req.session.user});
     //res.redirect('/blogs');// Comment for OAuth flow
 });
 

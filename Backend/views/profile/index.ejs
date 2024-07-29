@@ -2,7 +2,6 @@
     <%- include('../partials/head.ejs') %>
 
     <body>
-        
         <nav>
             <ul>
                 <li><a href="/">Home page</a></li>
@@ -17,14 +16,15 @@
         </nav>
 
         <header>
-            <h1>Login using : </h1>
+            <h1>Welcome to your profile <%= user.username %></h1>
+            <img src="<%= user.thumbnail %>" alt="Profile picture">
         </header>
 
         <main>
-            <a class="google-btn" href="/auth/google">Google+</a>
+            <p>Add extra in formations</p>
         </main>
 
-        
+
 
 
         <%- include('../partials/footer.ejs') %>

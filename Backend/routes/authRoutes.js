@@ -17,7 +17,7 @@ router.get('/logout', authController.logout);
 // Redirect from Google route
 router.get('/google/redirect',
     passport.authenticate('google', {
-        successRedirect : '/blogs/',
+        //successRedirect : '/blogs/',//Overwrites the below controller
         failureRedirect : '/login',
         failureFlash: 'Invalid Google credentials.'
     }),
